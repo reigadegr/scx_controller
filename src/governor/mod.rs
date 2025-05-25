@@ -1,9 +1,7 @@
 use crate::utils::node_reader::lock_value;
 use anyhow::{Result, anyhow};
 use hashbrown::HashSet;
-use libc::{O_WRONLY, open};
 use once_cell::sync::Lazy;
-use std::ffi::CString;
 use std::{fs, path::Path};
 
 static GOVS: Lazy<HashSet<Vec<u8>>> = Lazy::new(|| read_cgroup_dir().expect("Unsupport device"));

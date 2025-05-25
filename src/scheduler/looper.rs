@@ -7,6 +7,7 @@ use crate::{
 use compact_str::CompactString;
 use libc::pid_t;
 use likely_stable::unlikely;
+use log::info;
 
 pub struct Looper {
     pub activity_utils: ActivityUtils,
@@ -55,6 +56,7 @@ impl Looper {
 
             for i in &PROFILE.packages {
                 if self.global_package == i {
+                    info!("Detected target App: {}", self.global_package);
                     set_governor(b"scx\0");
                     lock_value(b"/proc/hmbird_sched/scx_enable\0", b"1\0");
                     self.wait_until_exit();
