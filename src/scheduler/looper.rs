@@ -3,7 +3,7 @@ use crate::{
     config::PROFILE,
     governor::set_governor,
     utils::{
-        node_reader::{lock_value, write_to_byte},
+        node_reader::lock_value,
         sleep::sleep_secs,
     },
 };

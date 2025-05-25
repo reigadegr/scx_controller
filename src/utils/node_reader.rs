@@ -25,7 +25,7 @@ pub fn un_lock_value_fd(fd: i32, value: &[u8]) {
 pub fn lock_value(path: &[u8], value: &[u8]) {
     unsafe {
         let _ = chmod(path.as_ptr(), 0o644);
-        write_to_byte(path, value);
+        let _ = write_to_byte(path, value);
         let _ = chmod(path.as_ptr(), 0o444);
     }
 }
