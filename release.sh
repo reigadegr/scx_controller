@@ -1,6 +1,6 @@
 cargo fmt
 rm -rf output
-rm -rf $(find ./target/aarch64-linux-android/release -name "*freezer-rs*")
+rm -rf $(find ./target/aarch64-linux-android/release -name "*scx*")
 
 export RUSTFLAGS="-C default-linker-libraries \
 -Z external-clangrt \

@@ -9,7 +9,7 @@ use stringzilla::sz;
 
 pub fn lock_value_fd(fd: i32, value: &[u8]) {
     unsafe {
-        let _ = fchmod(fd, 0o644);
+        let _ = fchmod(fd, 0o666);
         let _ = write(fd, value.as_ptr().cast::<c_void>(), value.len());
         let _ = fchmod(fd, 0o444);
     }
@@ -17,14 +17,14 @@ pub fn lock_value_fd(fd: i32, value: &[u8]) {
 
 pub fn un_lock_value_fd(fd: i32, value: &[u8]) {
     unsafe {
-        let _ = fchmod(fd, 0o644);
+        let _ = fchmod(fd, 0o666);
         let _ = write(fd, value.as_ptr().cast::<c_void>(), value.len());
     }
 }
 
 pub fn lock_value(path: &[u8], value: &[u8]) {
     unsafe {
-        let _ = chmod(path.as_ptr(), 0o644);
+        let _ = chmod(path.as_ptr(), 0o666);
         let _ = write_to_byte(path, value);
         let _ = chmod(path.as_ptr(), 0o444);
     }

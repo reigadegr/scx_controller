@@ -2,10 +2,7 @@ use crate::{
     activity::{ActivityUtils, get_tid_info::get_process_name},
     config::PROFILE,
     governor::set_governor,
-    utils::{
-        node_reader::lock_value,
-        sleep::sleep_secs,
-    },
+    utils::{node_reader::lock_value, sleep::sleep_secs},
 };
 use compact_str::CompactString;
 use libc::pid_t;
