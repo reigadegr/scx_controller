@@ -1,0 +1,13 @@
+/target
+/output
+**/__pycache__
+**/*.bak
+**/thread-opt
+**/*.pyc
+Cargo.lock
+*.zip
+src/*.sh
+**/*.txt
+.idea
+*patch
+**/scx_controller
