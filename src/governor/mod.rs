@@ -1,7 +1,7 @@
+use crate::utils::node_reader::lock_value_fd;
 use anyhow::{Result, anyhow};
 use hashbrown::HashSet;
-use libc::{O_WRONLY, c_void, open, write};
-use likely_stable::unlikely;
+use libc::{O_WRONLY, open};
 use once_cell::sync::Lazy;
 use std::ffi::CString;
 use std::{fs, path::Path};
@@ -30,11 +30,8 @@ fn read_cgroup_dir() -> Result<HashSet<i32>> {
     Ok(entries)
 }
 
-pub fn set_governor<const N: usize>(msg: &[u8]) {
+pub fn set_governor(msg: &[u8]) {
     for fd in get_govs() {
-        let bytes_write = unsafe { write(*fd, msg.as_ptr().cast::<c_void>(), N) };
-        if unlikely(bytes_write == -1) {
-            continue;
-        }
+        lock_value_fd(*fd, msg);
     }
 }
