@@ -2,7 +2,10 @@ use crate::{
     activity::{ActivityUtils, get_tid_info::get_process_name},
     config::PROFILE,
     governor::set_governor,
-    utils::{node_reader::write_to_byte, sleep::sleep_secs},
+    utils::{
+        node_reader::{lock_value, write_to_byte},
+        sleep::sleep_secs,
+    },
 };
 use compact_str::CompactString;
 use libc::pid_t;
@@ -36,7 +39,7 @@ impl Looper {
 
     fn game_exit(&mut self) {
         set_governor(b"walt\0");
-        let _ = write_to_byte(b"/proc/hmbird_sched/scx_enable\0", b"0\0");
+        lock_value(b"/proc/hmbird_sched/scx_enable\0", b"0\0");
         self.pid = -1;
     }
 
@@ -56,7 +59,7 @@ impl Looper {
             for i in &PROFILE.packages {
                 if self.global_package == i {
                     set_governor(b"scx\0");
-                    let _ = write_to_byte(b"/proc/hmbird_sched/scx_enable\0", b"1\0");
+                    lock_value(b"/proc/hmbird_sched/scx_enable\0", b"1\0");
                     self.wait_until_exit();
                     continue 'outer;
                 }

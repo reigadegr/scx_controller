@@ -3,7 +3,7 @@ use anyhow::{Result, anyhow};
 use compact_str::CompactString;
 use core::ptr::copy_nonoverlapping;
 use itoa::Buffer;
-use libc::{O_CREAT, O_RDONLY, O_TRUNC, O_WRONLY, c_void, fchmod, open, pid_t, read, write};
+use libc::{O_CREAT, O_RDONLY, O_TRUNC, O_WRONLY, c_void, chmod, fchmod, open, pid_t, read, write};
 use likely_stable::unlikely;
 use stringzilla::sz;
 
@@ -12,6 +12,21 @@ pub fn lock_value_fd(fd: i32, value: &[u8]) {
         let _ = fchmod(fd, 0o644);
         let _ = write(fd, value.as_ptr().cast::<c_void>(), value.len());
         let _ = fchmod(fd, 0o444);
+    }
+}
+
+pub fn un_lock_value_fd(fd: i32, value: &[u8]) {
+    unsafe {
+        let _ = fchmod(fd, 0o644);
+        let _ = write(fd, value.as_ptr().cast::<c_void>(), value.len());
+    }
+}
+
+pub fn lock_value(path: &[u8], value: &[u8]) {
+    unsafe {
+        let _ = chmod(path.as_ptr(), 0o644);
+        write_to_byte(path, value);
+        let _ = chmod(path.as_ptr(), 0o444);
     }
 }
 
