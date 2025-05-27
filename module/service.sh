@@ -24,7 +24,7 @@ if [ "$(getprop sys.boot_completed)" != "1" ]; then
     wait_until_login
     if [ ! -L $MODDIR/app_config.toml ]; then
         rm $MODDIR/app_config.toml
-        ln -s /storage/emulated/0/Android/app_config.toml $MODDIR/app_config.toml
+        ln -s /storage/emulated/0/Android/scx_controller/app_config.toml $MODDIR/app_config.toml
     fi
 fi
 

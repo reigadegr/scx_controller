@@ -1,7 +1,17 @@
-# 写需要在离开app后冻结掉的进程
+# 写需要强开scx的游戏
 packages = [
-    "com.example.app1",
-    "com.xunmeng.pinduoduo",
-    "com.example.app3",
-    "com.example.app3",
+    "com.miHoYo.Yuanshen",
+    "com.miHoYo.GenshinImpact",
+    "com.miHoYo.ys.bilibili",
+    "com.miHoYo.yuanshencb",
+    "com.miHoYo.hkrpg",
+    "com.miHoYo.hkrpg.bilibili",
+    "com.HoYoverse.hkrpgoversea",
+    "com.miHoYo.hkrpgcb",
+    "com.tencent.tmgp.sgame",
+    "com.miHoYo.Nap",
+    "com.yongshi.tenojo.ys",
+    "com.tencent.KiHan",
+    "com.ChillyRoom.DungeonShooter",
+    "com.hypergryph.arknights",
 ]

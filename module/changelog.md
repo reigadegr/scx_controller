@@ -1,3 +1,2 @@
-### freezer-rs是使用Rust语言构建的自动化冻结指定APP的工具
-- 发布首个正式版
-- 默认移除QQ
+### scx_controller是使用Rust语言构建的自动化控制scx相关节点的工具
+- 强制性开启官方不支持的APP
