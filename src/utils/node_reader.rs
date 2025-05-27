@@ -30,6 +30,13 @@ pub fn lock_value(path: &[u8], value: &[u8]) {
     }
 }
 
+pub fn unlock_value(path: &[u8], value: &[u8]) {
+    unsafe {
+        let _ = chmod(path.as_ptr(), 0o666);
+        let _ = write_to_byte(path, value);
+    }
+}
+
 pub fn read_file<const N: usize>(file: &[u8]) -> Result<CompactString> {
     let buffer = read_to_byte::<N>(file)?;
     let pos = sz::find(buffer, b"\0");
