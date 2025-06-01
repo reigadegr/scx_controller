@@ -14,7 +14,6 @@ use stringzilla::{StringZilla, sz};
 #[derive(Default)]
 pub struct TopPidInfo {
     pid: pid_t,
-    multi_window: bool,
 }
 
 impl TopPidInfo {
@@ -39,7 +38,7 @@ impl TopPidInfo {
         #[cfg(debug_assertions)]
         println!("当前pid:{pid}");
 
-        Self { pid, multi_window }
+        Self { pid }
     }
 }
 
