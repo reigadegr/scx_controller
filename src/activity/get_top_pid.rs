@@ -4,27 +4,42 @@ use dumpsys_rs::Dumpsys;
 use inotify::{Inotify, WatchMask};
 use libc::pid_t;
 use likely_stable::LikelyOption;
+#[cfg(debug_assertions)]
+use log::debug;
 use log::info;
+#[cfg(debug_assertions)]
+use minstant::Instant;
 use stringzilla::{StringZilla, sz};
 
 #[derive(Default)]
 pub struct TopPidInfo {
     pid: pid_t,
+    multi_window: bool,
 }
 
 impl TopPidInfo {
     pub fn new(dump: &[u8]) -> Self {
-        let pid = dump
-            .sz_splits(&b"\n")
-            .find(|line| sz::find(line, b" TOP").is_some())
+        let multi_window = sz::find(dump, b"Window #1").is_some();
+
+        let pid = if multi_window {
+            dump.sz_rsplits(&b"\n")
+                .find(|line| sz::find(line, b"Session{").is_some())
+        } else {
+            dump.sz_splits(&b"\n")
+                .find(|line| sz::find(line, b"Session{").is_some())
+        };
+        let pid = pid
             .and_then_likely(|line| {
-                line.sz_rfind(b"/").and_then_likely(|pos1| {
+                line.sz_rfind(b":").and_then_likely(|pos1| {
                     line[..pos1].sz_rfind(b" ").map(|pos2| &line[pos2 + 1..])
                 })
             })
             .and_then_likely(atoi::<pid_t>)
             .unwrap_or_default();
-        Self { pid }
+        #[cfg(debug_assertions)]
+        println!("当前pid:{pid}");
+
+        Self { pid, multi_window }
     }
 }
 
@@ -42,7 +57,7 @@ impl TopAppUtils {
             .unwrap();
 
         let dumper = loop {
-            match Dumpsys::new("activity") {
+            match Dumpsys::new("window") {
                 Some(d) => break d,
                 None => sleep_secs(1),
             }
@@ -64,9 +79,10 @@ impl TopAppUtils {
                 }
             }
         }
-
+        #[cfg(debug_assertions)]
+        let start = Instant::now();
         let dump = loop {
-            match self.dumper.dump_to_byte::<1024>(&["lru"]) {
+            match self.dumper.dump_to_byte::<32768>(&["visible-apps"]) {
                 Ok(dump) => break dump,
                 Err(e) => {
                     info!("Failed to dump windows: {e}, retrying");
@@ -74,6 +90,11 @@ impl TopAppUtils {
                 }
             }
         };
+        #[cfg(debug_assertions)]
+        {
+            let end = start.elapsed();
+            debug!("完成时间:{end:?}");
+        }
 
         TopPidInfo::new(&dump)
     }

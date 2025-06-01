@@ -7,12 +7,12 @@ import maketools.update as update
 help_text = """\
 ./make.py:
     build:
-        build and package thread-opt module
+        build and package scx_controller module
         sugg: try ./make.sh build --help to get details
     format:
-        format codes of thread-opt
+        format codes of scx_controller
     fix:
-        fix codes of thread-opt
+        fix codes of scx_controller
     update:
         recursive update all depended crates
     help:
