@@ -41,6 +41,8 @@ impl Looper {
     fn game_exit(&mut self) {
         set_governor(b"walt\0");
         unlock_value(b"/proc/hmbird_sched/scx_enable\0", b"0\0");
+        // lock_value(b"/proc/sys/oplus_sched_ext/scx_enable\0", b"0\0");
+        std::fs::write("/proc/sys/oplus_sched_ext/scx_enable", "0");
         self.pid = -1;
     }
 
@@ -62,6 +64,8 @@ impl Looper {
                     info!("Detected target App: {}", self.global_package);
                     set_governor(b"scx\0");
                     lock_value(b"/proc/hmbird_sched/scx_enable\0", b"1\0");
+                    // lock_value(b"/proc/sys/oplus_sched_ext/scx_enable\0", b"1\0");
+                    std::fs::write("/proc/sys/oplus_sched_ext/scx_enable", "1");
                     self.wait_until_exit();
                     continue 'outer;
                 }

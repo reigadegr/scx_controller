@@ -5,6 +5,9 @@ use core::ptr::copy_nonoverlapping;
 use itoa::Buffer;
 use libc::{O_CREAT, O_RDONLY, O_TRUNC, O_WRONLY, c_void, chmod, fchmod, open, pid_t, read, write};
 use likely_stable::unlikely;
+use std::fs::OpenOptions;
+use std::io::Write;
+use std::path::Path;
 use stringzilla::sz;
 
 pub fn lock_value_fd(fd: i32, value: &[u8]) {
@@ -26,6 +29,7 @@ pub fn lock_value(path: &[u8], value: &[u8]) {
     unsafe {
         let _ = chmod(path.as_ptr(), 0o666);
         let _ = write_to_byte(path, value);
+        // let _ = write_to_byte_std(path, value);
         let _ = chmod(path.as_ptr(), 0o444);
     }
 }
@@ -64,8 +68,9 @@ pub fn read_to_byte<const N: usize>(file: &[u8]) -> Result<[u8; N]> {
 
 pub fn write_to_byte(file: &[u8], msg: &[u8]) -> Result<()> {
     unsafe {
-        let fd = open(file.as_ptr(), O_WRONLY | O_CREAT | O_TRUNC, 0o664);
+        let fd = open(file.as_ptr(), O_WRONLY | O_CREAT | O_TRUNC);
         if unlikely(fd == -1) {
+            println!("获取fd好像失败了");
             return Err(anyhow!("Cannot open file."));
         }
         let _fd_guard = FileGuard::new(fd);
@@ -75,6 +80,16 @@ pub fn write_to_byte(file: &[u8], msg: &[u8]) -> Result<()> {
             return Err(anyhow!("Cannot write file."));
         }
     }
+    Ok(())
+}
+
+pub fn write_to_byte_std<P: AsRef<Path>>(path: P, ctx: &[u8]) -> Result<()> {
+    let mut fd = OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .create(false)
+        .open(path)?;
+    fd.write_all(ctx)?;
     Ok(())
 }
 
