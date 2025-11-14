@@ -2,10 +2,10 @@ pub mod format_profile;
 use crate::utils::node_reader::{read_file, write_to_byte};
 use compact_str::CompactString;
 use format_profile::format_toml;
-use once_cell::sync::Lazy;
 use serde::Deserialize;
+use std::sync::LazyLock;
 
-pub static PROFILE: Lazy<Config> = Lazy::new(|| {
+pub static PROFILE: LazyLock<Config> = LazyLock::new(|| {
     let profile_path = b"/data/adb/modules/scx_controller/app_config.toml\0";
     let profile = read_file::<65536>(profile_path).unwrap();
     let format_rs = format_toml(&profile);

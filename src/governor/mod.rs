@@ -1,10 +1,11 @@
 use crate::utils::node_reader::lock_value;
 use anyhow::{Result, anyhow};
 use hashbrown::HashSet;
-use once_cell::sync::Lazy;
+use std::sync::LazyLock;
 use std::{fs, path::Path};
 
-static GOVS: Lazy<HashSet<Vec<u8>>> = Lazy::new(|| read_cgroup_dir().expect("Unsupport device"));
+static GOVS: LazyLock<HashSet<Vec<u8>>> =
+    LazyLock::new(|| read_cgroup_dir().expect("Unsupport device"));
 
 pub fn get_govs() -> &'static HashSet<Vec<u8>> {
     &GOVS
