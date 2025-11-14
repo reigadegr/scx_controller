@@ -13,7 +13,7 @@ pub fn get_govs() -> &'static HashSet<Vec<u8>> {
 fn read_cgroup_dir() -> Result<HashSet<Vec<u8>>> {
     let task_dir = Path::new("/sys/devices/system/cpu/cpufreq/");
     let entries = fs::read_dir(task_dir)
-        .map_err(|e| anyhow!("Cannot read task_dir: {}", e))?
+        .map_err(|e| anyhow!("Cannot read task_dir: {e}"))?
         .filter_map(|entry| {
             entry.ok().and_then(|entry| {
                 entry.file_name().into_string().ok().map(|name| {
