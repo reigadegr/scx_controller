@@ -50,4 +50,5 @@ opt-level = 3
 strip = true
 debug = 0
 debug-assertions = false
-incremental = true
+incremental = false
+panic = "abort"
