@@ -14,6 +14,9 @@ export RUSTFLAGS="
     -Z saturating-float-casts=yes
     -Z mir-enable-passes=+Inline
     -Z precise-enum-drop-elaboration=yes
+    -C llvm-args=-enable-ml-inliner=release
+    -C llvm-args=-ml-inliner-model-selector=arm64-mixed
+    -C llvm-args=-ml-inliner-skip-policy=if-caller-not-cold
     -C default-linker-libraries
     -C relro-level=none
     -C code-model=small
