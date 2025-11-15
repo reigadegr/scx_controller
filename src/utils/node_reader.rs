@@ -51,7 +51,6 @@ pub fn write_to_byte(file: &[u8], msg: &[u8]) -> Result<()> {
     unsafe {
         let fd = open(file.as_ptr(), O_WRONLY | O_CREAT | O_TRUNC);
         if unlikely(fd == -1) {
-            println!("获取fd好像失败了");
             return Err(anyhow!("Cannot open file."));
         }
         let _fd_guard = FileGuard::new(fd);
