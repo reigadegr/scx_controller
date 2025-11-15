@@ -6,8 +6,7 @@ use libc::pid_t;
 use likely_stable::LikelyOption;
 use log::info;
 use ndk_sys::android_get_device_api_level;
-use stringzilla::StringZilla;
-use stringzilla::sz::find;
+use stringzilla::stringzilla::{StringZillableBinary, find};
 
 #[derive(Default)]
 pub struct TopPidInfo {

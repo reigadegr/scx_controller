@@ -1,7 +1,7 @@
 pub mod logger;
 use crate::utils::node_reader::write_to_byte;
 use itoa::Buffer;
-use libc::getpid;
+use libc::{getpid, pthread_self, pthread_setname_np};
 use likely_stable::unlikely;
 use log::info;
 use logger::{init_log, log_metainfo};
@@ -9,7 +9,7 @@ use logger::{init_log, log_metainfo};
 pub fn init_misc() {
     working_in_background();
     init_log();
-    set_main_thread_name(b"ProcCtrl\0");
+    set_main_thread_name(b"proc_ctrl\0");
     log_metainfo();
     print_misc();
 }
@@ -31,7 +31,7 @@ fn set_main_thread_name(name: &[u8]) {
     };
 
     unsafe {
-        libc::pthread_setname_np(libc::pthread_self(), thread_name.as_ptr());
+        pthread_setname_np(pthread_self(), thread_name.as_ptr());
     }
 }
 
