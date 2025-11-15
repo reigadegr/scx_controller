@@ -3,7 +3,7 @@ use crate::utils::node_reader::{read_file, write_to_byte};
 use compact_str::CompactString;
 use format_profile::format_toml;
 use serde::Deserialize;
-use std::sync::LazyLock;
+use std::{collections::HashSet, sync::LazyLock};
 
 pub static PROFILE: LazyLock<Config> = LazyLock::new(|| {
     let profile_path = b"/data/adb/modules/scx_controller/app_config.toml\0";
@@ -16,5 +16,10 @@ pub static PROFILE: LazyLock<Config> = LazyLock::new(|| {
 
 #[derive(Deserialize)]
 pub struct Config {
+    pub hmbird_config: HashSet<HmbirdConfig>,
+}
+
+#[derive(Deserialize, Eq, Hash, PartialEq)]
+pub struct HmbirdConfig {
     pub packages: Box<[CompactString]>,
 }

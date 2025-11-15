@@ -57,13 +57,15 @@ impl Looper {
                 self.global_package = name;
             }
 
-            for i in &PROFILE.packages {
-                if self.global_package == i {
-                    info!("Detected target App: {}", self.global_package);
-                    set_governor(b"scx\0");
-                    lock_value(b"/proc/hmbird_sched/scx_enable\0", b"1\0");
-                    self.wait_until_exit();
-                    continue 'outer;
+            for i in &PROFILE.hmbird_config {
+                for j in &i.packages {
+                    if self.global_package == j {
+                        info!("Detected target App: {}", self.global_package);
+                        set_governor(b"scx\0");
+                        lock_value(b"/proc/hmbird_sched/scx_enable\0", b"1\0");
+                        self.wait_until_exit();
+                        continue 'outer;
+                    }
                 }
             }
         }
