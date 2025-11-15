@@ -10,11 +10,6 @@ compact_str = { version = "0.9.0", default-features = false, features = [
     "serde",
 ] }
 dumpsys-rs = { git = "https://github.com/reigadegr/dumpsys-rs" }
-hashbrown = { version = "0.15.2", default-features = false, features = [
-    "default-hasher",
-    "inline-more",
-    "serde",
-] }
 inotify = { version = "0.11.0", default-features = false }
 itoa = { version = "1.0.14", features = [] }
 libc = { version = "0.2.170", default-features = false }
