@@ -1,4 +1,5 @@
 # 写需要强开scx的游戏
+[[hmbird_config]]
 packages = [
     "com.miHoYo.Yuanshen",
     "com.miHoYo.GenshinImpact",
