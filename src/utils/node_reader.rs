@@ -3,24 +3,25 @@ use compact_str::CompactString;
 use core::ptr::copy_nonoverlapping;
 use itoa::Buffer;
 use libc::{chmod, pid_t};
-use std::fs::OpenOptions;
-use std::io::Write;
 use std::{io::ErrorKind, str::from_utf8};
 use stringzilla::sz;
-use tokio::{fs::File, io::AsyncReadExt};
+use tokio::{
+    fs::{File, OpenOptions},
+    io::{AsyncReadExt, AsyncWriteExt},
+};
 
-pub fn lock_value(path: &[u8], value: &[u8]) {
+pub async fn lock_value(path: &[u8], value: &[u8]) {
     unsafe {
         let _ = chmod(path.as_ptr(), 0o666);
-        let _ = write_to_byte(path, value);
+        let _ = write_to_byte(path, value).await;
         let _ = chmod(path.as_ptr(), 0o444);
     }
 }
 
-pub fn unlock_value(path: &[u8], value: &[u8]) {
+pub async fn unlock_value(path: &[u8], value: &[u8]) {
     unsafe {
         let _ = chmod(path.as_ptr(), 0o666);
-        let _ = write_to_byte(path, value);
+        let _ = write_to_byte(path, value).await;
     }
 }
 
@@ -50,13 +51,17 @@ pub async fn read_to_byte<const N: usize>(file: &[u8]) -> Result<[u8; N]> {
     }
 }
 
-pub fn write_to_byte(file: &[u8], msg: &[u8]) -> Result<()> {
-    let end = sz::find(file, b"\0").unwrap_or(1);
+pub async fn write_to_byte(file: &[u8], msg: &[u8]) -> Result<()> {
+    let end = sz::find(file, b"\0").unwrap_or(file.len());
     let file = &file[..end];
     let file = from_utf8(file)?;
-    let mut file = OpenOptions::new().write(true).truncate(true).open(file)?;
+    let mut file = OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .open(file)
+        .await?;
 
-    let _ = file.write_all(msg);
+    let _ = file.write_all(msg).await;
     Ok(())
 }
 

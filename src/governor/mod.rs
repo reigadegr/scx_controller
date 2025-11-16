@@ -25,8 +25,8 @@ fn read_cgroup_dir() -> Result<HashSet<Vec<u8>>> {
     Ok(entries)
 }
 
-pub fn set_governor(msg: &[u8]) {
+pub async fn set_governor(msg: &[u8]) {
     for path in get_govs() {
-        lock_value(path, msg);
+        lock_value(path, msg).await;
     }
 }

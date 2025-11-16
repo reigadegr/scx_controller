@@ -6,20 +6,20 @@ use likely_stable::unlikely;
 use log::info;
 use logger::{init_log, log_metainfo};
 
-pub fn init_misc() {
-    working_in_background();
+pub async fn init_misc() {
+    working_in_background().await;
     init_log();
     set_main_thread_name(b"proc_ctrl\0");
     log_metainfo();
     print_misc();
 }
 
-fn working_in_background() {
+async fn working_in_background() {
     unsafe {
         let pid = getpid();
         let mut itoa_buf = Buffer::new();
         let pid = itoa_buf.format(pid).as_bytes();
-        let _ = write_to_byte(b"/dev/cpuset/background/tasks\0", pid);
+        let _ = write_to_byte(b"/dev/cpuset/background/tasks\0", pid).await;
     }
 }
 

@@ -28,6 +28,6 @@ static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
 #[tokio::main]
 async fn main() {
-    init_misc();
+    init_misc().await;
     Scheduler::new().start_run().await;
 }
