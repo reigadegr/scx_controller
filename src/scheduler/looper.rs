@@ -6,14 +6,13 @@ use crate::{
 };
 use compact_str::CompactString;
 use itoa::Buffer;
-use libc::pid_t;
 use likely_stable::unlikely;
 use log::info;
 
 pub struct Looper {
     pub activity_utils: ActivityUtils,
     pub global_package: CompactString,
-    pub pid: pid_t,
+    pub pid: i32,
 }
 
 impl Looper {

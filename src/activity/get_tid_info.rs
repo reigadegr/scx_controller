@@ -1,10 +1,9 @@
 use crate::utils::node_reader::{get_proc_path, read_to_byte};
 use anyhow::Result;
 use compact_str::CompactString;
-use libc::pid_t;
 use stringzilla::sz;
 
-pub async fn get_process_name(pid: pid_t) -> Result<CompactString> {
+pub async fn get_process_name(pid: i32) -> Result<CompactString> {
     let cmdline = get_proc_path::<32>(pid, b"/cmdline");
 
     let buffer = read_to_byte::<128>(&cmdline).await?;

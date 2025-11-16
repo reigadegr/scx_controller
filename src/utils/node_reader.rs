@@ -2,7 +2,7 @@ use anyhow::{Result, anyhow};
 use compact_str::CompactString;
 use core::ptr::copy_nonoverlapping;
 use itoa::Buffer;
-use libc::{chmod, pid_t};
+use libc::chmod;
 use std::{io::ErrorKind, str::from_utf8};
 use stringzilla::sz;
 use tokio::{
@@ -65,7 +65,7 @@ pub async fn write_to_byte(file: &[u8], msg: &[u8]) -> Result<()> {
     Ok(())
 }
 
-pub fn get_proc_path<const N: usize>(id: pid_t, file: &[u8]) -> [u8; N] {
+pub fn get_proc_path<const N: usize>(id: i32, file: &[u8]) -> [u8; N] {
     let mut buffer = [0u8; N];
     buffer[0..6].copy_from_slice(b"/proc/");
 

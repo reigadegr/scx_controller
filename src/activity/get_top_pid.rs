@@ -2,7 +2,6 @@ use crate::utils::sleep::sleep_secs;
 use atoi::atoi;
 use dumpsys_rs::Dumpsys;
 use inotify::{Inotify, WatchMask};
-use libc::pid_t;
 use likely_stable::LikelyOption;
 use log::info;
 use ndk_sys::android_get_device_api_level;
@@ -10,7 +9,7 @@ use stringzilla::stringzilla::{StringZillableBinary, find};
 
 #[derive(Default)]
 pub struct TopPidInfo {
-    pid: pid_t,
+    pid: i32,
 }
 
 impl TopPidInfo {
