@@ -1,7 +1,7 @@
-id=scx_controller
+id=hmbird_controller
 name=Scx Controller
 version=v0.1.0
 versionCode=10
 author=Nigger
 description=Auto controller scx governor and node.
-updateJson=https://github.com/reigadegr/scx_controller/raw/main/module/update.json
+updateJson=https://github.com/reigadegr/hmbird_controller/raw/main/module/update.json

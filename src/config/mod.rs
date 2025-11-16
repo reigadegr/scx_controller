@@ -7,7 +7,7 @@ use std::sync::LazyLock;
 use toml::Table;
 
 pub static PROFILE: LazyLock<Config> = LazyLock::new(|| {
-    let profile_path = b"/data/adb/modules/scx_controller/app_config.toml\0";
+    let profile_path = b"/data/adb/modules/hmbird_controller/app_config.toml\0";
     let profile = tokio::task::block_in_place(|| {
         tokio::runtime::Handle::current().block_on(read_file::<65536>(profile_path))
     })

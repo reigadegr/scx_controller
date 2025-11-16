@@ -24,10 +24,10 @@ if [ "$(getprop sys.boot_completed)" != "1" ]; then
     wait_until_login
     if [ ! -L $MODDIR/app_config.toml ]; then
         rm $MODDIR/app_config.toml
-        ln -s /storage/emulated/0/Android/scx_controller/app_config.toml $MODDIR/app_config.toml
+        ln -s /storage/emulated/0/Android/hmbird_controller/app_config.toml $MODDIR/app_config.toml
     fi
 fi
 
-killall -15 scx_controller; rm $LOG
-chmod +x ${0%/*}/scx_controller
-RUST_BACKTRACE=1 nohup $MODDIR/scx_controller >$LOG 2>&1 &
+killall -15 hmbird_controller; rm $LOG
+chmod +x ${0%/*}/hmbird_controller
+RUST_BACKTRACE=1 nohup $MODDIR/hmbird_controller >$LOG 2>&1 &

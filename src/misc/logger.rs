@@ -11,7 +11,7 @@ pub fn init_log() {
 
 pub fn log_metainfo() {
     info!(
-        "scx_controller v{} {}, llvm-{}, rustc-{}, on {},{},{}",
+        "hmbird_controller v{} {}, llvm-{}, rustc-{}, on {},{},{}",
         env!("CARGO_PKG_VERSION"),
         build_type(),
         env!("VERGEN_RUSTC_LLVM_VERSION"),
