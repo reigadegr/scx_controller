@@ -4,10 +4,10 @@ use compact_str::CompactString;
 use libc::pid_t;
 use stringzilla::sz;
 
-pub fn get_process_name(pid: pid_t) -> Result<CompactString> {
+pub async fn get_process_name(pid: pid_t) -> Result<CompactString> {
     let cmdline = get_proc_path::<32, 8>(pid, b"/cmdline");
 
-    let buffer = read_to_byte::<128>(&cmdline)?;
+    let buffer = read_to_byte::<128>(&cmdline).await?;
 
     let pos = sz::find(buffer, b":");
     if let Some(sub) = pos {

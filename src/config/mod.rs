@@ -5,9 +5,15 @@ use format_profile::format_toml;
 use serde::Deserialize;
 use std::{collections::HashSet, sync::LazyLock};
 
+// use std::sync::LazyLock;
+
 pub static PROFILE: LazyLock<Config> = LazyLock::new(|| {
     let profile_path = b"/data/adb/modules/scx_controller/app_config.toml\0";
-    let profile = read_file::<65536>(profile_path).unwrap();
+    let profile = tokio::task::block_in_place(|| {
+        tokio::runtime::Handle::current().block_on(read_file::<65536>(profile_path))
+    })
+    .unwrap();
+
     let format_rs = format_toml(&profile);
     let profile: Config = toml::from_str(&profile).unwrap();
     write_to_byte(profile_path, format_rs.as_bytes()).unwrap();

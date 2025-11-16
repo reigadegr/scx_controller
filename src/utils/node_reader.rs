@@ -5,12 +5,9 @@ use core::ptr::copy_nonoverlapping;
 use itoa::Buffer;
 use libc::{O_CREAT, O_TRUNC, O_WRONLY, c_void, chmod, open, pid_t, write};
 use likely_stable::unlikely;
-use std::{
-    fs::File,
-    io::{ErrorKind, Read},
-    str::from_utf8,
-};
+use std::{io::ErrorKind, str::from_utf8};
 use stringzilla::sz;
+use tokio::{fs::File, io::AsyncReadExt};
 
 pub fn lock_value(path: &[u8], value: &[u8]) {
     unsafe {
@@ -27,25 +24,27 @@ pub fn unlock_value(path: &[u8], value: &[u8]) {
     }
 }
 
-pub fn read_file<const N: usize>(file: &[u8]) -> Result<CompactString> {
-    let buffer = read_to_byte::<N>(file)?;
+pub async fn read_file<const N: usize>(file: &[u8]) -> Result<CompactString> {
+    let buffer = read_to_byte::<N>(file).await?;
     let pos = sz::find(buffer, b"\0");
     let buffer = pos.map_or(&buffer[..], |pos| &buffer[..pos]);
     let buffer = CompactString::from_utf8(buffer)?;
     Ok(buffer)
 }
 
-pub fn read_to_byte<const N: usize>(file: &[u8]) -> Result<[u8; N]> {
+pub async fn read_to_byte<const N: usize>(file: &[u8]) -> Result<[u8; N]> {
     let end = sz::find(file, b"\0").unwrap_or(N);
     let file = &file[..end];
     let file = from_utf8(file)?;
 
-    let mut file = File::open(file).map_err(|e| anyhow!("Cannot open file: {e}"))?;
+    let mut file = File::open(file)
+        .await
+        .map_err(|e| anyhow!("Cannot open file: {e}"))?;
 
     let mut buffer = [0u8; N];
 
-    match file.read_exact(&mut buffer) {
-        Ok(()) => Ok(buffer),
+    match file.read_exact(&mut buffer).await {
+        Ok(_) => Ok(buffer),
         Err(e) if e.kind() == ErrorKind::UnexpectedEof => Ok(buffer),
         Err(e) => Err(e.into()),
     }

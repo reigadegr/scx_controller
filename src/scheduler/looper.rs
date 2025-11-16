@@ -41,7 +41,7 @@ impl Looper {
         self.pid = -1;
     }
 
-    pub fn enter_loop(&mut self) {
+    pub async fn enter_loop(&mut self) {
         'outer: loop {
             {
                 let pid = self.activity_utils.top_app_utils.get_top_pid();
@@ -49,7 +49,7 @@ impl Looper {
                     continue 'outer;
                 }
                 self.pid = pid;
-                let name = get_process_name(pid).unwrap_or_default();
+                let name = get_process_name(pid).await.unwrap_or_default();
                 self.global_package = name;
             }
 
