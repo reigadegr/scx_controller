@@ -57,6 +57,7 @@ impl Looper {
                 for j in &i.packages {
                     if self.global_package == j {
                         info!("Detected target App: {}", self.global_package);
+                        info!("dbg: {:?}", i.node_value);
                         set_governor(b"scx\0").await;
                         lock_value(b"/proc/hmbird_sched/scx_enable\0", b"1\0").await;
                         self.wait_until_exit().await;

@@ -2,7 +2,7 @@
 [[hmbird_config]]
 packages = [
     "com.miHoYo.Yuanshen",
-    "com.miHoYo.GenshinImpact", 
+    "com.miHoYo.GenshinImpact",
     "com.miHoYo.ys.bilibili",
     "com.miHoYo.yuanshencb",
     "com.miHoYo.hkrpg",
@@ -13,29 +13,102 @@ packages = [
     "com.tencent.KiHan",
     "com.ChillyRoom.DungeonShooter",
 ]
-cluster_separate = 0
-cpu7_tl = 70
-cpu_cluster_masks = 3145728
-cpuctrl_high = 55
-cpuctrl_low = 40
-highres_tick_ctrl_dbg = 0
-hmbird_preempt_policy = 0
-hmbirdcore_debug = 0
-iso_free_rescue = 0
-isoctrl_high_ratio = 75
-isoctrl_low_ratio = 60
-isolate_ctrl = 0
-misfit_ds = 90
-parctrl_high_ratio = 55
-parctrl_high_ratio_l = 65
-parctrl_low_ratio = 40
-parctrl_low_ratio_l = 50
-partial_ctrl = 1
-save_gov = 0
-scx_shadow_tick_enable = 1
-slim_for_app = 0
-slim_stats = 0
-watchdog_enable = 0
+
+[[hmbird_config.node_value]]
+key = "cluster_separate"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "cluster_separate"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "cpu7_tl"
+value = 70
+
+[[hmbird_config.node_value]]
+key = "cpu_cluster_masks"
+value = 3145728
+
+[[hmbird_config.node_value]]
+key = "cpuctrl_high"
+value = 55
+
+[[hmbird_config.node_value]]
+key = "cpuctrl_low"
+value = 40
+
+[[hmbird_config.node_value]]
+key = "highres_tick_ctrl_dbg"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "hmbird_preempt_policy"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "hmbirdcore_debug"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "iso_free_rescue"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "isoctrl_high_ratio"
+value = 75
+
+[[hmbird_config.node_value]]
+key = "isoctrl_low_ratio"
+value = 60
+
+[[hmbird_config.node_value]]
+key = "isolate_ctrl"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "misfit_ds"
+value = 90
+
+[[hmbird_config.node_value]]
+key = "parctrl_high_ratio"
+value = 55
+
+[[hmbird_config.node_value]]
+key = "parctrl_high_ratio_l"
+value = 65
+
+[[hmbird_config.node_value]]
+key = "parctrl_low_ratio"
+value = 40
+
+[[hmbird_config.node_value]]
+key = "parctrl_low_ratio_l"
+value = 50
+
+[[hmbird_config.node_value]]
+key = "partial_ctrl"
+value = 1
+
+[[hmbird_config.node_value]]
+key = "save_gov"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "scx_shadow_tick_enable"
+value = 1
+
+[[hmbird_config.node_value]]
+key = "slim_for_app"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "slim_stats"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "watchdog_enable"
+value = 0
 
 [[hmbird_config]]
 packages = [
@@ -43,26 +116,95 @@ packages = [
     "com.tencent.tmgp.pubgmhd",
     "com.tencent.tmgp.sgame",
 ]
-cluster_separate = 0
-cpu7_tl = 70
-cpu_cluster_masks = 524288160
-cpuctrl_high = 55
-cpuctrl_low = 40
-highres_tick_ctrl_dbg = 0
-hmbird_preempt_policy = 0
-hmbirdcore_debug = 0
-iso_free_rescue = 0
-isoctrl_high_ratio = 75
-isoctrl_low_ratio = 60
-isolate_ctrl = 1
-misfit_ds = 90
-parctrl_high_ratio = 0
-parctrl_high_ratio_l = 0
-parctrl_low_ratio = 0
-parctrl_low_ratio_l = 0
-partial_ctrl = 1
-save_gov = 0
-scx_shadow_tick_enable = 1
-slim_for_app = 0
-slim_stats = 0
-watchdog_enable = 0
+
+[[hmbird_config.node_value]]
+key = "cluster_separate"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "cpu7_tl"
+value = 70
+
+[[hmbird_config.node_value]]
+key = "cpu_cluster_masks"
+value = 524288160
+
+[[hmbird_config.node_value]]
+key = "cpuctrl_high"
+value = 55
+
+[[hmbird_config.node_value]]
+key = "cpuctrl_low"
+value = 40
+
+[[hmbird_config.node_value]]
+key = "highres_tick_ctrl_dbg"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "hmbird_preempt_policy"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "hmbirdcore_debug"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "iso_free_rescue"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "isoctrl_high_ratio"
+value = 75
+
+[[hmbird_config.node_value]]
+key = "isoctrl_low_ratio"
+value = 60
+
+[[hmbird_config.node_value]]
+key = "isolate_ctrl"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "misfit_ds"
+value = 90
+
+[[hmbird_config.node_value]]
+key = "parctrl_high_ratio"
+value = 55
+
+[[hmbird_config.node_value]]
+key = "parctrl_high_ratio_l"
+value = 65
+
+[[hmbird_config.node_value]]
+key = "parctrl_low_ratio"
+value = 40
+
+[[hmbird_config.node_value]]
+key = "parctrl_low_ratio_l"
+value = 50
+
+[[hmbird_config.node_value]]
+key = "partial_ctrl"
+value = 1
+
+[[hmbird_config.node_value]]
+key = "save_gov"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "scx_shadow_tick_enable"
+value = 1
+
+[[hmbird_config.node_value]]
+key = "slim_for_app"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "slim_stats"
+value = 0
+
+[[hmbird_config.node_value]]
+key = "watchdog_enable"
+value = 0
