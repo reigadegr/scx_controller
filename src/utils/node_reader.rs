@@ -65,20 +65,6 @@ pub async fn write_to_byte(file: &[u8], msg: &[u8]) -> Result<()> {
     Ok(())
 }
 
-pub async fn write_to_int(file: &[u8], msg: i64) -> Result<()> {
-    let end = sz::find(file, b"\0").unwrap_or(file.len());
-    let file = &file[..end];
-    let file = from_utf8(file)?;
-    let mut file = OpenOptions::new()
-        .write(true)
-        .truncate(true)
-        .open(file)
-        .await?;
-
-    let _ = file.write_all(&msg.to_le_bytes()).await;
-    Ok(())
-}
-
 pub fn get_proc_path<const N: usize>(id: i32, file: &[u8]) -> [u8; N] {
     let mut buffer = [0u8; N];
     buffer[0..6].copy_from_slice(b"/proc/");
