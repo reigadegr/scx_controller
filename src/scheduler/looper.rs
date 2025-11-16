@@ -28,10 +28,9 @@ impl Looper {
     }
 
     async fn wait_until_exit(&mut self) {
-        set_governor(b"scx\0").await;
-        lock_value(b"/proc/hmbird_sched/scx_enable\0", b"1\0").await;
-
         loop {
+            set_governor(b"scx\0").await;
+            lock_value(b"/proc/hmbird_sched/scx_enable\0", b"1\0").await;
             lock_value(b"/proc/hmbird_sched/heartbeat\0", b"1\0").await;
             for (k, v) in &self.node_values {
                 let mut buf = Buffer::new();
@@ -49,6 +48,11 @@ impl Looper {
     async fn game_exit(&mut self) {
         set_governor(b"walt\0").await;
         unlock_value(b"/proc/hmbird_sched/scx_enable\0", b"0\0").await;
+        for (k, v) in &self.node_values {
+            let mut buf = Buffer::new();
+            let v = buf.format(*v).as_bytes();
+            let () = unlock_value(k, v).await;
+        }
         self.node_values.clear();
         self.pid = -1;
     }
