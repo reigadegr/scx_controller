@@ -27,8 +27,6 @@ pub struct HmbirdConfig {
     pub cpu_cluster_masks: i32,
     pub cpuctrl_high: i32,
     pub cpuctrl_low: i32,
-    pub heartbeat: i32,
-    pub heartbeat_enable: i32,
     pub highres_tick_ctrl_dbg: i32,
     pub hmbird_preempt_policy: i32,
     pub hmbirdcore_debug: i32,

@@ -2,10 +2,7 @@ use crate::{
     activity::{ActivityUtils, get_tid_info::get_process_name},
     config::PROFILE,
     governor::set_governor,
-    utils::{
-        node_reader::{lock_value, unlock_value},
-        sleep::sleep_secs,
-    },
+    utils::node_reader::{lock_value, unlock_value},
 };
 use compact_str::CompactString;
 use libc::pid_t;
@@ -29,12 +26,12 @@ impl Looper {
 
     fn wait_until_exit(&mut self) {
         loop {
-            sleep_secs(1);
             let pid = self.activity_utils.top_app_utils.get_top_pid();
             if unlikely(pid != self.pid) {
                 self.game_exit();
                 return;
             }
+            lock_value(b"/proc/hmbird_sched/heartbeat\0", b"1\0");
         }
     }
 
@@ -46,7 +43,6 @@ impl Looper {
 
     pub fn enter_loop(&mut self) {
         'outer: loop {
-            sleep_secs(1);
             {
                 let pid = self.activity_utils.top_app_utils.get_top_pid();
                 if self.pid == pid {

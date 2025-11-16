@@ -1,0 +1,74 @@
+[1mdiff --git a/src/scheduler/looper.rs b/src/scheduler/looper.rs[m
+[1mindex 667e923..eb1dd0f 100644[m
+[1m--- a/src/scheduler/looper.rs[m
+[1m+++ b/src/scheduler/looper.rs[m
+[36m@@ -2,10 +2,7 @@[m [muse crate::{[m
+     activity::{ActivityUtils, get_tid_info::get_process_name},[m
+     config::PROFILE,[m
+     governor::set_governor,[m
+[31m-    utils::{[m
+[31m-        node_reader::{lock_value, unlock_value},[m
+[31m-        sleep::sleep_secs,[m
+[31m-    },[m
+[32m+[m[32m    utils::node_reader::{lock_value, unlock_value},[m
+ };[m
+ use compact_str::CompactString;[m
+ use libc::pid_t;[m
+[36m@@ -29,12 +26,12 @@[m [mimpl Looper {[m
+ [m
+     fn wait_until_exit(&mut self) {[m
+         loop {[m
+[31m-            sleep_secs(1);[m
+             let pid = self.activity_utils.top_app_utils.get_top_pid();[m
+             if unlikely(pid != self.pid) {[m
+                 self.game_exit();[m
+                 return;[m
+             }[m
+[32m+[m[32m            lock_value(b"/proc/hmbird_sched/heartbeat\0", b"1\0");[m
+         }[m
+     }[m
+ [m
+[36m@@ -46,7 +43,6 @@[m [mimpl Looper {[m
+ [m
+     pub fn enter_loop(&mut self) {[m
+         'outer: loop {[m
+[31m-            sleep_secs(1);[m
+             {[m
+                 let pid = self.activity_utils.top_app_utils.get_top_pid();[m
+                 if self.pid == pid {[m
+[1mdiff --git a/src/utils/node_reader.rs b/src/utils/node_reader.rs[m
+[1mindex 7f551f2..22ee7af 100644[m
+[1m--- a/src/utils/node_reader.rs[m
+[1m+++ b/src/utils/node_reader.rs[m
+[36m@@ -31,20 +31,20 @@[m [mpub fn read_file<const N: usize>(file: &[u8]) -> Result<CompactString> {[m
+ }[m
+ [m
+ pub fn read_to_byte<const N: usize>(file: &[u8]) -> Result<[u8; N]> {[m
+[32m+[m[32m    let end = sz::find(file, b"\0").unwrap_or(N);[m
+[32m+[m[32m    let file = &file[..end];[m
+[32m+[m[32m    let file = from_utf8(file)?;[m
+[32m+[m
+[32m+[m[32m    let Ok(mut file) = File::open(file) else {[m
+[32m+[m[32m        return Err(anyhow!("Cannot open file."));[m
+[32m+[m[32m    };[m
+     let mut buffer = [0u8; N];[m
+[31m-    unsafe {[m
+[31m-        let fd = open(file.as_ptr(), O_RDONLY);[m
+[31m-        if unlikely(fd == -1) {[m
+[31m-            return Err(anyhow!("Cannot open file."));[m
+[31m-        }[m
+[31m-        let _fd_guard = FileGuard::new(fd);[m
+[31m-        let bytes_read = read(fd, buffer.as_mut_ptr().cast::<c_void>(), N);[m
+ [m
+[31m-        if unlikely(bytes_read == -1) {[m
+[31m-            return Err(anyhow!("Cannot read file."));[m
+[31m-        }[m
+[32m+[m[32m    match file.read_exact(&mut buffer) {[m
+[32m+[m[32m        Ok(()) => Ok(buffer),[m
+[32m+[m[32m        Err(e) if e.kind() == ErrorKind::UnexpectedEof => Ok(buffer),[m
+[32m+[m[32m        Err(e) => Err(e.into()),[m
+     }[m
+[31m-    Ok(buffer)[m
+ }[m
+ [m
+ pub fn write_to_byte(file: &[u8], msg: &[u8]) -> Result<()> {[m
