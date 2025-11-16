@@ -65,7 +65,7 @@ pub async fn write_to_byte(file: &[u8], msg: &[u8]) -> Result<()> {
     Ok(())
 }
 
-pub fn get_proc_path<const N: usize, const L: usize>(id: pid_t, file: &[u8]) -> [u8; N] {
+pub fn get_proc_path<const N: usize>(id: pid_t, file: &[u8]) -> [u8; N] {
     let mut buffer = [0u8; N];
     buffer[0..6].copy_from_slice(b"/proc/");
 
@@ -76,7 +76,21 @@ pub fn get_proc_path<const N: usize, const L: usize>(id: pid_t, file: &[u8]) -> 
 
     unsafe {
         copy_nonoverlapping(id.as_ptr(), buffer.as_mut_ptr().add(6), id_length);
-        copy_nonoverlapping(file.as_ptr(), buffer.as_mut_ptr().add(6 + id_length), L);
+        copy_nonoverlapping(
+            file.as_ptr(),
+            buffer.as_mut_ptr().add(6 + id_length),
+            file.len(),
+        );
+    }
+    buffer
+}
+
+pub fn get_hmbird_path<const N: usize>(file: &[u8]) -> [u8; N] {
+    let mut buffer = [0u8; N];
+    buffer[0..19].copy_from_slice(b"/proc/hmbird_sched/");
+
+    unsafe {
+        copy_nonoverlapping(file.as_ptr(), buffer.as_mut_ptr().add(19), file.len());
     }
     buffer
 }

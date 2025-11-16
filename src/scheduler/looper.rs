@@ -2,9 +2,10 @@ use crate::{
     activity::{ActivityUtils, get_tid_info::get_process_name},
     config::PROFILE,
     governor::set_governor,
-    utils::node_reader::{lock_value, unlock_value},
+    utils::node_reader::{get_hmbird_path, lock_value, unlock_value, write_to_byte},
 };
 use compact_str::CompactString;
+use itoa::Buffer;
 use libc::pid_t;
 use likely_stable::unlikely;
 use log::info;
@@ -57,9 +58,15 @@ impl Looper {
                 for j in &i.packages {
                     if self.global_package == j {
                         info!("Detected target App: {}", self.global_package);
-                        info!("dbg: {:?}", i.node_value);
                         set_governor(b"scx\0").await;
                         lock_value(b"/proc/hmbird_sched/scx_enable\0", b"1\0").await;
+                        for (k, v) in &i.node_value {
+                            let path = get_hmbird_path::<64>(k.as_bytes());
+                            let v = v.as_integer().unwrap_or(0);
+                            let mut buf = Buffer::new();
+                            let v = buf.format(v).as_bytes();
+                            let _ = write_to_byte(&path, v).await;
+                        }
                         self.wait_until_exit().await;
                         continue 'outer;
                     }
