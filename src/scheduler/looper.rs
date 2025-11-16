@@ -8,11 +8,13 @@ use compact_str::CompactString;
 use itoa::Buffer;
 use likely_stable::unlikely;
 use log::info;
+use std::collections::HashMap;
 
 pub struct Looper {
     pub activity_utils: ActivityUtils,
     pub global_package: CompactString,
     pub pid: i32,
+    pub node_values: HashMap<[u8; 64], i64>,
 }
 
 impl Looper {
@@ -21,6 +23,7 @@ impl Looper {
             activity_utils,
             global_package: CompactString::new(""),
             pid: -1,
+            node_values: HashMap::new(),
         }
     }
 
@@ -29,7 +32,7 @@ impl Looper {
             let pid = self.activity_utils.top_app_utils.get_top_pid();
             if unlikely(pid != self.pid) {
                 self.game_exit().await;
-                return;
+                break;
             }
             lock_value(b"/proc/hmbird_sched/heartbeat\0", b"1\0").await;
         }
@@ -38,6 +41,7 @@ impl Looper {
     async fn game_exit(&mut self) {
         set_governor(b"walt\0").await;
         unlock_value(b"/proc/hmbird_sched/scx_enable\0", b"0\0").await;
+        self.node_values.clear();
         self.pid = -1;
     }
 
@@ -62,6 +66,7 @@ impl Looper {
                         for (k, v) in &i.node_value {
                             let path = get_hmbird_path::<64>(k.as_bytes());
                             let v = v.as_integer().unwrap_or(0);
+                            self.node_values.insert(path, v);
                             let mut buf = Buffer::new();
                             let v = buf.format(v).as_bytes();
                             let _ = write_to_byte(&path, v).await;
