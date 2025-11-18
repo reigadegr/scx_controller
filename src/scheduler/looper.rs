@@ -9,12 +9,20 @@ use itoa::Buffer;
 use likely_stable::unlikely;
 use log::info;
 use std::collections::HashMap;
+use tokio::time::{Duration, sleep};
 
 pub struct Looper {
-    pub activity_utils: ActivityUtils,
-    pub global_package: CompactString,
-    pub pid: i32,
-    pub node_values: HashMap<[u8; 64], i64>,
+    activity_utils: ActivityUtils,
+    global_package: CompactString,
+    pid: i32,
+    node_values: HashMap<[u8; 64], i64>,
+}
+
+async fn keep_hmbird_heart() {
+    loop {
+        lock_value(b"/proc/hmbird_sched/heartbeat\0", b"1\0").await;
+        sleep(Duration::from_secs(1)).await;
+    }
 }
 
 impl Looper {
@@ -30,6 +38,7 @@ impl Looper {
     async fn wait_until_exit(&mut self) {
         set_governor(b"scx\0").await;
         lock_value(b"/proc/hmbird_sched/scx_enable\0", b"1\0").await;
+
         loop {
             lock_value(b"/proc/hmbird_sched/heartbeat\0", b"1\0").await;
             for (k, v) in &self.node_values {
@@ -49,9 +58,7 @@ impl Looper {
         set_governor(b"walt\0").await;
         unlock_value(b"/proc/hmbird_sched/scx_enable\0", b"0\0").await;
         for (k, v) in &self.node_values {
-            let mut buf = Buffer::new();
-            let v = buf.format(*v).as_bytes();
-            let () = unlock_value(k, v).await;
+            let () = unlock_value(k, b"0\0").await;
         }
         self.node_values.clear();
         self.pid = -1;
