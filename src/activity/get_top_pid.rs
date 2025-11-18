@@ -112,15 +112,15 @@ impl TopAppUtils {
     }
 
     pub fn set_top_pid(&mut self) -> TopPidInfo {
-        // loop {
-        // match self.inotify.read_events_blocking(&mut [0; 1024]) {
-        // Ok(_) => break,
-        // Err(e) => {
-        // info!("Failed to read events: {e}, retrying");
-        // sleep_secs(1);
-        // }
-        // }
-        // }
+        loop {
+            match self.inotify.read_events_blocking(&mut [0; 1024]) {
+                Ok(_) => break,
+                Err(e) => {
+                    info!("Failed to read events: {e}, retrying");
+                    sleep_secs(1);
+                }
+            }
+        }
         sleep_secs(1);
         let dump = loop {
             match self.dumper.dump_to_byte::<65536>(&["visible-apps"]) {

@@ -57,7 +57,7 @@ impl Looper {
     async fn game_exit(&mut self) {
         set_governor(b"walt\0").await;
         unlock_value(b"/proc/hmbird_sched/scx_enable\0", b"0\0").await;
-        for (k, v) in &self.node_values {
+        for k in self.node_values.keys() {
             let () = unlock_value(k, b"0\0").await;
         }
         self.node_values.clear();
