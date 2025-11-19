@@ -85,8 +85,6 @@ impl Looper {
                             let v = buf.format(v).as_bytes();
                             let () = lock_value(&path, v).await;
                         }
-                        // 在 enter_loop 里，刚检测到游戏后 spawn
-
                         self.wait_until_exit().await;
 
                         continue 'outer;
