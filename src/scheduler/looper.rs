@@ -38,11 +38,13 @@ impl Looper {
     async fn wait_until_exit(&mut self) {
         set_governor(b"scx\0").await;
         lock_value(b"/proc/hmbird_sched/scx_enable\0", b"1\0").await;
-
+        let heart = tokio::spawn(keep_hmbird_heart());
         loop {
             let pid = self.activity_utils.top_app_utils.get_top_pid();
             if unlikely(pid != self.pid) {
                 self.game_exit().await;
+                heart.abort();
+                let _ = heart.await;
                 break;
             }
         }
@@ -84,10 +86,9 @@ impl Looper {
                             let () = lock_value(&path, v).await;
                         }
                         // 在 enter_loop 里，刚检测到游戏后 spawn
-                        let heart = tokio::spawn(keep_hmbird_heart());
+
                         self.wait_until_exit().await;
-                        heart.abort();
-                        let _ = heart.await;
+
                         continue 'outer;
                     }
                 }
