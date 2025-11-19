@@ -40,8 +40,6 @@ impl Looper {
         lock_value(b"/proc/hmbird_sched/scx_enable\0", b"1\0").await;
 
         loop {
-            // lock_value(b"/proc/hmbird_sched/heartbeat\0", b"1\0").await;
-
             let pid = self.activity_utils.top_app_utils.get_top_pid();
             if unlikely(pid != self.pid) {
                 self.game_exit().await;
