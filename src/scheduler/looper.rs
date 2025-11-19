@@ -36,16 +36,11 @@ impl Looper {
     }
 
     async fn wait_until_exit(&mut self) {
-        for (k, v) in &self.node_values {
-            let mut buf = Buffer::new();
-            let v = buf.format(*v).as_bytes();
-            let () = lock_value(k, v).await;
-        }
         set_governor(b"scx\0").await;
         lock_value(b"/proc/hmbird_sched/scx_enable\0", b"1\0").await;
 
         loop {
-            lock_value(b"/proc/hmbird_sched/heartbeat\0", b"1\0").await;
+            // lock_value(b"/proc/hmbird_sched/heartbeat\0", b"1\0").await;
 
             let pid = self.activity_utils.top_app_utils.get_top_pid();
             if unlikely(pid != self.pid) {
@@ -61,7 +56,6 @@ impl Looper {
         for k in self.node_values.keys() {
             let () = unlock_value(k, b"0\0").await;
         }
-
         self.node_values.clear();
         self.pid = -1;
     }
@@ -82,14 +76,17 @@ impl Looper {
                 for j in &i.packages {
                     if self.global_package == j {
                         info!("Detected target App: {}", self.global_package);
+                        lock_value(b"/proc/hmbird_sched/scx_enable\0", b"0\0").await;
                         for (k, v) in &i.node_value {
                             let path = get_hmbird_path::<64>(k.as_bytes());
                             let v = v.as_integer().unwrap_or(0);
                             self.node_values.insert(path, v);
+                            let mut buf = Buffer::new();
+                            let v = buf.format(v).as_bytes();
+                            let () = lock_value(&path, v).await;
                         }
                         // 在 enter_loop 里，刚检测到游戏后 spawn
                         let heart = tokio::spawn(keep_hmbird_heart());
-                        lock_value(b"/proc/hmbird_sched/scx_enable\0", b"0\0").await;
                         self.wait_until_exit().await;
                         heart.abort();
                         let _ = heart.await;
